@@ -9,7 +9,7 @@
     "prebuild": "cd src && npm i && cd src/services/bgi && npm i && cd src/services/casic && npm i cd src/services/casic && npm i",
     "build": "babel src --out-dir build && shx cp .env build 2>/dev/null || : && shx cp src/schema.graphql build",
     "now-build": "babel src --out-dir build && shx cp src/schema.graphql build",
-    "start": "CI= npm run build && node build/index.js",
+    "start": "npm run build && node build/index.js",
     "seedDb": "./node_modules/.bin/babel-node src/seed/seed-db.js",
     "start-gateway": "nodemon index.js",
     "start-service-bgi": "nodemon services/bgi/index.js",
