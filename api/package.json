@@ -14,7 +14,7 @@
     "start-gateway": "nodemon index.js",
     "start-service-bgi": "nodemon services/bgi/index.js",
     "start-service-casic": "nodemon services/casic/index.js",
-    "start-services": "concurrently \"npm:start-service-*\"",
+    "start-services": "concurrently \"npm:start-service-*\""
   },
   "author": "Konstantin",
   "license": "MIT",
