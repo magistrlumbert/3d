@@ -15,7 +15,6 @@
     "start-service-bgi": "nodemon services/bgi/index.js",
     "start-service-casic": "nodemon services/casic/index.js",
     "start-services": "concurrently \"npm:start-service-*\"",
-    "postinstall": "lerna bootstrap"
   },
   "author": "Konstantin",
   "license": "MIT",
@@ -49,7 +48,6 @@
     "babel-plugin-module-resolver": "^4.0.0",
     "concurrently": "^6.2.0",
     "cross-env": "^7.0.2",
-    "lerna": "latest",
     "nodemon": "^2.0.9",
     "shx": "^0.3.2"
   }
