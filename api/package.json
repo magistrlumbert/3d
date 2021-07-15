@@ -11,8 +11,8 @@
     "start": "npm run build && node build/index.js",
     "seedDb": "./node_modules/.bin/babel-node src/seed/seed-db.js",
     "start-gateway": "nodemon index.js",
-    "start-service-bgi": "nodemon services/bgi/index.js",
-    "start-service-casic": "nodemon services/casic/index.js",
+    "start-service-bgi": "nodemon functions/bgi/index.js",
+    "start-service-casic": "nodemon functions/casic/index.js",
     "start-services": "concurrently \"npm:start-service-*\""
   },
   "author": "Konstantin",
