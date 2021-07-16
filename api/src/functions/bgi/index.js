@@ -6,7 +6,7 @@ import dotenv from 'dotenv'
 // set environment variables from .env
 dotenv.config()
 
-import resolvers from './resolvers.js'
+import resolvers from 'resolvers.js'
 
 /*
  * Create a Neo4j driver instance to connect to the database
