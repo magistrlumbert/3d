@@ -9,11 +9,7 @@
     "build": "babel src --out-dir build && shx cp .env build 2>/dev/null || : && shx cp src/schema.graphql build",
     "now-build": "babel src --out-dir build && shx cp src/schema.graphql build",
     "start": "npm run build && node build/index.js",
-    "seedDb": "./node_modules/.bin/babel-node src/seed/seed-db.js",
-    "start-gateway": "nodemon index.js",
-    "start-service-bgi": "nodemon functions/bgi/index.js",
-    "start-service-casic": "nodemon functions/casic/index.js",
-    "start-services": "concurrently \"npm:start-service-*\""
+    "seedDb": "./node_modules/.bin/babel-node src/seed/seed-db.js"
   },
   "author": "Konstantin",
   "license": "MIT",
