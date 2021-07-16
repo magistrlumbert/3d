@@ -7,6 +7,7 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 const app = express()
+console.log(process.env.URL)
 
 const gateway = new ApolloGateway({
   // This entire `serviceList` is optional when running in managed federation
@@ -16,7 +17,7 @@ const gateway = new ApolloGateway({
   // real usage-based metrics.
   serviceList: [
     // { name: 'bgi', url: 'http://localhost:4001/graphql' },
-    { name: 'casic', url: `${process.env.URL}/.netlify/functions/bgi` },
+    { name: 'casic', url: `${process.env.URL}/.netlify/functions/casic` },
     // { name: 'casc', url: 'http://localhost:4003/graphql' },
     // { name: 'casics3', url: 'http://localhost:4004/graphql' },
   ],
