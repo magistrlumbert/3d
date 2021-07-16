@@ -1,7 +1,8 @@
 {
   "name": "accounts",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "build": "CI= npm run build"
   },
   "dependencies": {
     "@apollo/federation": "latest",
