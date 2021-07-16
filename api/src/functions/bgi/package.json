@@ -5,8 +5,8 @@
     "build": "CI= npm run build"
   },
   "dependencies": {
-    "@apollo/federation": "latest",
-    "apollo-server": "latest",
+    "@apollo/federation": "^0.17.0",
+    "apollo-server": "^2.18.2",
     "graphql": "latest"
   },
   "type": "module",
