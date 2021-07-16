@@ -4,7 +4,7 @@ import { Grid, Paper } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import clsx from 'clsx'
 
-import BGI from './BGI'
+// import BGI from './BGI'
 import CASIC from './CASIC'
 import CSIC from './CSIC'
 import CEC from './CEC'
@@ -35,11 +35,11 @@ export default function Dashboard() {
     <React.Fragment>
       <Grid container spacing={4}>
         {/* BGI */}
-        <Grid item xs={12} md={6} lg={6}>
-          <Paper className={fixedHeightPaper}>
-            <BGI />
-          </Paper>
-        </Grid>
+        {/*<Grid item xs={12} md={6} lg={6}>*/}
+        {/*<Paper className={fixedHeightPaper}>*/}
+        {/*<BGI />*/}
+        {/*</Paper>*/}
+        {/*</Grid>*/}
         {/*/!* User Count *!/*/}
         {/*<Grid item xs={12} md={8} lg={7}>*/}
         {/*<Paper className={fixedHeightPaper}>*/}
