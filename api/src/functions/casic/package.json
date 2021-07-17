@@ -1,7 +1,7 @@
 {
-  "name": "accounts",
+  "name": "casic",
   "scripts": {
-    "start": "node index.js",
+    "start": "node casic.js",
     "build": "CI= npm run build"
   },
   "dependencies": {
