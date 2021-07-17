@@ -123,7 +123,7 @@ const typeDefs = gql`
     identity: String
   }
 `
-exports.handler = async function (event, context) {
+exports.handler = function (event, context) {
     const server = new ApolloServer({
       context: ({ req }) => {
         return {
@@ -141,7 +141,7 @@ exports.handler = async function (event, context) {
     introspection: true,
 	})
 
-    return await new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
         const callback = (err, args) => (err ? reject(err) : resolve(args))
         server.createHandler()(event, context, callback)
     })

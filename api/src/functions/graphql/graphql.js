@@ -24,7 +24,7 @@ const gateway = new ApolloGateway({
   __exposeQueryPlanExperimental: false,
 })
 
-exports.handler = async function (event, context) {
+exports.handler = function (event, context) {
     const server = new ApolloServer({
         gateway,
         playground: true,
