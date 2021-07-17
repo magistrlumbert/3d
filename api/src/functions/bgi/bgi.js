@@ -123,7 +123,7 @@ const typeDefs = gql`
     identity: String
   }
 `
-exports.handler = function (event, context) {
+exports.handler = async function (event, context) {
     const server = new ApolloServer({
       context: ({ req }) => {
         return {
@@ -132,15 +132,17 @@ exports.handler = function (event, context) {
         }
       },
     schema: buildFederatedSchema([
-      {
-        typeDefs,
-        resolvers,
-      },
-    ]),
-})
+			{
+				typeDefs,
+				resolvers,
+			},
+		]),
+	playground: true,
+    introspection: true,
+	})
 
     return new Promise((resolve, reject) => {
-        const callback = (err, args) => (err ? reject(err) : resolve(args));
-        server.createHandler()(event, context, callback);
-    });
-};
+        const callback = (err, args) => (err ? reject(err) : resolve(args))
+        server.createHandler()(event, context, callback)
+    })
+}

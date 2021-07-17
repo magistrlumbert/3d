@@ -1,6 +1,6 @@
 // This module can be used to serve the GraphQL endpoint
 // as a lambda function
-
+console.log('graphql working')
 import { ApolloGateway } from '@apollo/gateway/dist/index'
 
 const { ApolloServer } = require('apollo-server-lambda')
@@ -16,7 +16,7 @@ const gateway = new ApolloGateway({
   // real usage-based metrics.
   serviceList: [
     // { name: 'bgi', url: process.env.NEO4J_URI_BGI },
-    { name: 'casic', url: 'https://relaxed-keller-93776e.netlify.app/.netlify/functions/casic' },
+    { name: 'bgi', url: 'https://relaxed-keller-93776e.netlify.app/.netlify/functions/bgi' },
     // { name: 'casc', url: 'http://localhost:4003/graphql' },
   ],
 
