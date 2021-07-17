@@ -141,7 +141,7 @@ exports.handler = async function (event, context) {
     introspection: true,
 	})
 
-    return new Promise((resolve, reject) => {
+    return await new Promise((resolve, reject) => {
         const callback = (err, args) => (err ? reject(err) : resolve(args))
         server.createHandler()(event, context, callback)
     })
