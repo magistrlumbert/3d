@@ -64,7 +64,7 @@ const typeDefs = gql`
 
 
 
-exports.handler = async function (event, context) {
+exports.casic.handler = async function (event, context) {
 
   const server = new ApolloServer({
   context: ({ req }) => {
