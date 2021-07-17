@@ -1,5 +1,5 @@
 const resolvers = {
-  CASIC: {
+  BGI: {
     __resolveType(obj) {
       if (obj.name) {
         return 'Inventor'
@@ -17,7 +17,7 @@ const resolvers = {
     },
   },
   Query: {
-    get_casic: async (_, params, ctx) => {
+    get_bgi: async (_, params, ctx) => {
       let session = ctx.driver.session()
       const cypherQuery = `MATCH (n)-[r]-(m)
                           RETURN n, m, r

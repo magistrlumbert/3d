@@ -1,13 +1,12 @@
 {
-  "name": "casic",
+  "name": "bgi",
   "scripts": {
-    "start": "node casic.js",
+    "start": "node bgi.js",
     "build": "CI= npm run build"
   },
   "dependencies": {
-    "@apollo/federation": "latest",
-    "apollo-server": "latest",
-    "esm": "^3.2.25",
+    "@apollo/federation": "^0.17.0",
+    "apollo-server": "^2.18.2",
     "graphql": "latest"
   },
   "type": "module",
