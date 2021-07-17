@@ -18,16 +18,22 @@ const gateway = new ApolloGateway({
     // { name: 'bgi', url: process.env.NEO4J_URI_BGI },
     { name: 'casic', url: 'https://relaxed-keller-93776e.netlify.app/.netlify/functions/casic' },
     // { name: 'casc', url: 'http://localhost:4003/graphql' },
-    // { name: 'casics3', url: 'http://localhost:4004/graphql' },
   ],
 
   // Experimental: Enabling this enables the query plan view in Playground.
   __exposeQueryPlanExperimental: false,
 })
 
-const server = new ApolloServer({
-  gateway,
-  subscriptions: false,
-})
+exports.handler = async function (event, context) {
+    const server = new ApolloServer({
+        gateway,
+        playground: true,
+        introspection: true,
+        subscriptions: false,
+    });
 
-exports.handler = server.createHandler()
+    return new Promise((resolve, reject) => {
+        const callback = (err, args) => (err ? reject(err) : resolve(args))
+        server.createHandler()(event, context, callback)
+    })
+}

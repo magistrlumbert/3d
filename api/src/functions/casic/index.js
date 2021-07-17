@@ -62,7 +62,11 @@ const typeDefs = gql`
   }
 `
 
-const server = new ApolloServer({
+
+
+exports.handler = async function (event, context) {
+
+  const server = new ApolloServer({
   context: ({ req }) => {
     return {
       req,
@@ -78,6 +82,8 @@ const server = new ApolloServer({
   ]),
 })
 
-server.listen({ port: 4002 }).then(({ url }) => {
-  console.log(`🚀 Server ready at ${url}`)
-})
+    return new Promise((resolve, reject) => {
+        const callback = (err, args) => (err ? reject(err) : resolve(args))
+        server.createHandler()(event, context, callback)
+    })
+}
