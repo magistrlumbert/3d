@@ -16,7 +16,7 @@ const gateway = new ApolloGateway({
   // real usage-based metrics.
   serviceList: [
     // { name: 'bgi', url: process.env.NEO4J_URI_BGI },
-    { name: 'casic', url: process.env.NEO4J_URI_CASIC },
+    { name: 'casic', url: 'https://relaxed-keller-93776e.netlify.app/.netlify/functions/casic' },
     // { name: 'casc', url: 'http://localhost:4003/graphql' },
     // { name: 'casics3', url: 'http://localhost:4004/graphql' },
   ],
