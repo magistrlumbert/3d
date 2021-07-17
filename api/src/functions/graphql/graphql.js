@@ -1,6 +1,6 @@
 // This module can be used to serve the GraphQL endpoint
 // as a lambda function
-console.log('graphql working')
+console.log('graphql workingx')
 import { ApolloGateway } from '@apollo/gateway/dist/index'
 
 const { ApolloServer } = require('apollo-server-lambda')
@@ -24,7 +24,7 @@ const gateway = new ApolloGateway({
   __exposeQueryPlanExperimental: false,
 })
 
-exports.handler = function (event, context) {
+exports.handler = async function (event, context) {
     const server = new ApolloServer({
         gateway,
         playground: true,

@@ -123,7 +123,8 @@ const typeDefs = gql`
     identity: String
   }
 `
-exports.handler = function (event, context) {
+console.log('sss')
+exports.handler = async function (event, context) {
     const server = new ApolloServer({
       context: ({ req }) => {
         return {
