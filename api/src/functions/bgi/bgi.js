@@ -147,8 +147,7 @@ const server =  new ApolloServer({
 	
 	console.log('bgi 147: ', server)
 	
-var exports = {}
-exports.handler = async function (event, context) {
+const handler = async function (event, context) {
 	
 
     return new Promise((resolve, reject) => {
