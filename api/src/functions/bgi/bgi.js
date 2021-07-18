@@ -125,22 +125,28 @@ const typeDefs = gql`
 `
 console.log('sss')
 exports.handler = async function (event, context) {
-    const server = await new ApolloServer({
-      context: ({ req }) => {
-        return {
-          req,
-          driver,
-        }
-      },
-    schema: buildFederatedSchema([
-			{
-				typeDefs,
-				resolvers,
-			},
-		]),
-	playground: true,
-    introspection: true,
-	})
+	try {
+		const server = await new ApolloServer({
+		  context: ({ req }) => {
+			return {
+			  req,
+			  driver,
+			}
+		  },
+		schema: buildFederatedSchema([
+				{
+					typeDefs,
+					resolvers,
+				},
+			]),
+		playground: true,
+		introspection: true,
+		})
+	} catch (e) {
+      console.log(e)
+    }
+	
+	console.log('bgi 149: ', server)
 
     return new Promise((resolve, reject) => {
         const callback = (err, args) => (err ? reject(err) : resolve(args))
