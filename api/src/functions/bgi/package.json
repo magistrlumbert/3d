@@ -5,7 +5,7 @@
     "build": "CI= npm run build"
   },
   "dependencies": {
-    "@apollo/federation": "^0.17.0",
+    "@apollo/federation": "latest",
     "apollo-server-lambda": "^2.14.2",
     "dotenv": "^10.0.0",
     "graphql": "^15.3.0",
