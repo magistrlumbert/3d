@@ -25,12 +25,25 @@ const gateway = new ApolloGateway({
 })
 
 exports.handler = async function (event, context) {
+	try {
+      const server = new ApolloServer({
+        gateway,
+        playground: true,
+        introspection: true,
+        subscriptions: false,
+      })
+	}
+    catch (e) {
+      console.log(e)
+    }
     const server = new ApolloServer({
         gateway,
         playground: true,
         introspection: true,
         subscriptions: false,
-    });
+    })
+	
+	console.log(server)
 
     return new Promise((resolve, reject) => {
         const callback = (err, args) => (err ? reject(err) : resolve(args))
