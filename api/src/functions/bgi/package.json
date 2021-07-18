@@ -6,8 +6,10 @@
   },
   "dependencies": {
     "@apollo/federation": "^0.17.0",
-    "apollo-server": "^2.18.2",
-    "graphql": "latest"
+    "apollo-server-lambda": "^2.14.2",
+    "dotenv": "^10.0.0",
+    "graphql": "latest",
+    "neo4j-driver": "^4.3.1"
   },
   "type": "module",
   "devDependencies": {
@@ -15,5 +17,9 @@
     "@babel/core": "^7.14.6",
     "@babel/node": "^7.14.7",
     "@babel/preset-env": "^7.14.7"
+  },
+  "compilerOptions": {
+    "module": "es6",
+    "target": "es5"
   }
 }

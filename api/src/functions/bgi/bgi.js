@@ -124,9 +124,7 @@ const typeDefs = gql`
   }
 `
 console.log('sss')
-exports.handler = async function (event, context) {
-	console.log('bgi 147: ', server)
-	const server = await new ApolloServer({
+const server = await new ApolloServer({
 	  context: ({ req }) => {
 		return {
 		  req,
@@ -142,9 +140,16 @@ exports.handler = async function (event, context) {
 	playground: true,
 	introspection: true,
 	})
+	
+	console.log('bgi 128: ')
+	
 
 	
 	console.log('bgi 147: ', server)
+	
+var exports = {}
+exports.handler = async function (event, context) {
+	
 
     return new Promise((resolve, reject) => {
         const callback = (err, args) => (err ? reject(err) : resolve(args))
