@@ -141,12 +141,8 @@ const server =  new ApolloServer({
 	introspection: true,
 	})
 	
-	console.log('bgi 128: ')
-	
-
-	
-	console.log('bgi 147: ', server)
-	
+	console.log('bgi 144: ')
+		
 const handler = async function (event, context) {
 	
 
@@ -155,3 +151,5 @@ const handler = async function (event, context) {
         server.createHandler()(event, context, callback)
     })
 }
+
+export {handler}
