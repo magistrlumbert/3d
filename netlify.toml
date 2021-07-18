@@ -1,5 +1,5 @@
 [build]
-  command = "cd api && npm i && npm run build  && cd .. && npm i cd api/src/functions/graphql && npm i && cd web-react && npm i && npm run build "
+  command = "cd api && npm i && npm run build  && cd .. && npm i && cd web-react && npm i && npm run build "
   publish = "web-react/build"
   functions = "api/build/functions"
 
