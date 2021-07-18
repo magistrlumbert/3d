@@ -1,4 +1,4 @@
-import { ApolloServer, gql } from 'apollo-server'
+import { ApolloServer, gql } from 'apollo-server-lambda'
 import { buildFederatedSchema } from '@apollo/federation'
 import neo4j from 'neo4j-driver'
 // import { Neo4jGraphQL } from '@neo4j/graphql'
@@ -125,7 +125,7 @@ const typeDefs = gql`
 `
 console.log('sss')
 exports.handler = async function (event, context) {
-
+	console.log('bgi 147: ', server)
 	const server = await new ApolloServer({
 	  context: ({ req }) => {
 		return {
