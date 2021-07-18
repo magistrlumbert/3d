@@ -124,7 +124,7 @@ const typeDefs = gql`
   }
 `
 console.log('sss')
-const server = await new ApolloServer({
+const server =  new ApolloServer({
 	  context: ({ req }) => {
 		return {
 		  req,
