@@ -4,12 +4,7 @@ import { Grid, Paper } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import clsx from 'clsx'
 
-// import BGI from './BGI'
-import CASIC from './CASIC'
-import CSIC from './CSIC'
-import CEC from './CEC'
-
-// import UserCount from './UserCount'
+import BGI from './BGI'
 
 export default function Dashboard() {
   const theme = useTheme()
@@ -34,36 +29,12 @@ export default function Dashboard() {
   return (
     <React.Fragment>
       <Grid container spacing={4}>
-        {/* BGI */}
-        {/*<Grid item xs={12} md={6} lg={6}>*/}
-        {/*<Paper className={fixedHeightPaper}>*/}
-        {/*<BGI />*/}
-        {/*</Paper>*/}
-        {/*</Grid>*/}
-        {/*/!* User Count *!/*/}
-        {/*<Grid item xs={12} md={8} lg={7}>*/}
-        {/*<Paper className={fixedHeightPaper}>*/}
-        {/*<UserCount />*/}
-        {/*</Paper>*/}
-        {/*</Grid>*/}
-        {/* CASIC */}
         <Grid item xs={12} md={6} lg={6}>
           <Paper className={fixedHeightPaper}>
-            <CASIC />
+            <BGI />
           </Paper>
         </Grid>
-        {/* CSIC */}
-        <Grid item xs={12}>
-          <Paper className={classes.paper}>
-            <CSIC />
-          </Paper>
-        </Grid>
-        {/* CEC */}
-        <Grid item xs={12}>
-          <Paper className={classes.paper}>
-            <CEC />
-          </Paper>
-        </Grid>
+
       </Grid>
     </React.Fragment>
   )
