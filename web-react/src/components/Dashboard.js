@@ -34,7 +34,6 @@ export default function Dashboard() {
             <BGI />
           </Paper>
         </Grid>
-
       </Grid>
     </React.Fragment>
   )
