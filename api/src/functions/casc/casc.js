@@ -6,7 +6,7 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 const resolvers = {
-  BGI: {
+  CASC: {
     __resolveType(obj) {
       if (obj.name) {
         return 'Inventor'
@@ -24,7 +24,7 @@ const resolvers = {
     },
   },
   Query: {
-    get_bgi: async (_, { query }, ctx) => {
+    get_casc: async (_, { query }, ctx) => {
       let session = ctx.driver.session()
       const cypherQuery = query
       return await session.run(cypherQuery).then((result) => {
@@ -77,23 +77,22 @@ const resolvers = {
  * with fallback to defaults
  */
 
-// console.log("process.env.NEO4J_URI_BGI", process.env.NEO4J_URI_BGI)
 const driver = neo4j.driver(
-  process.env.NEO4J_URI_BGI || 'bolt://54.224.51.117:7687',
+  process.env.NEO4J_URI_CASC || 'bolt://34.239.140.111:7687',
   neo4j.auth.basic(
     process.env.NEO4J_USER || 'neo4j',
-    process.env.NEO4J_PASSWORD_BGI || 'i-08bb780d2ee5c5ec9'
+    process.env.NEO4J_PASSWORD_CASC || 'i-0cd55b5744e56cfcc'
   )
 )
 
 const typeDefs = gql`
-  union BGI = Inventor | Licensee | Organization | Patent
+  union CASC = Inventor | Licensee | Organization | Patent
 
   extend type Query {
-    get_bgi(query: String): ResponseBGI
+    get_casc(query: String): ResponseCASC
   }
-  type ResponseBGI {
-    nodes: [BGI]
+  type ResponseCASC {
+    nodes: [CASC]
     links: [RELS]
   }
   type RELS {
@@ -137,6 +136,6 @@ const server = new ApolloServer({
   introspection: true,
 })
 
-server.listen({ port: 4001 }).then(({ url }) => {
+server.listen({ port: 4003 }).then(({ url }) => {
   console.log(`🚀 Server ready at ${url}`)
 })

@@ -5,6 +5,8 @@ import { makeStyles } from '@material-ui/core/styles'
 import clsx from 'clsx'
 
 import BGI from './BGI'
+import CASC from './CASC'
+import CEC from './CEC'
 
 export default function Dashboard() {
   const theme = useTheme()
@@ -32,6 +34,16 @@ export default function Dashboard() {
         <Grid item xs={12} md={6} lg={6}>
           <Paper className={fixedHeightPaper}>
             <BGI />
+          </Paper>
+        </Grid>
+        <Grid item xs={12} md={6} lg={6}>
+          <Paper className={fixedHeightPaper}>
+            <CASC />
+          </Paper>
+        </Grid>
+        <Grid item xs={12} md={6} lg={6}>
+          <Paper className={fixedHeightPaper}>
+            <CEC />
           </Paper>
         </Grid>
       </Grid>

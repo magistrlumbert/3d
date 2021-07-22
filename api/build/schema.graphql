@@ -1,0 +1,69 @@
+scalar Point
+scalar DateTime
+scalar PointInput
+directive @isAuthenticated on QUERY | FIELD_DEFINITION
+#directive @hasScope(scope: [String]) on QUERY | FIELD
+
+type User {
+  userId: ID!
+  name: String
+  reviews: [Review] @relationship(type: "WROTE", direction: OUT)
+  avgStars: Float
+    @cypher(
+      statement: "MATCH (this)-[:WROTE]->(r:Review) RETURN toFloat(avg(r.stars))"
+    )
+  numReviews: Int
+    @cypher(statement: "MATCH (this)-[:WROTE]->(r:Review) RETURN COUNT(r)")
+  recommendations(first: Int = 3): [Business]
+    @cypher(
+      statement: "MATCH (this)-[:WROTE]->(r:Review)-[:REVIEWS]->(:Business)<-[:REVIEWS]-(:Review)<-[:WROTE]-(:User)-[:WROTE]->(:Review)-[:REVIEWS]->(rec:Business) WHERE NOT EXISTS( (this)-[:WROTE]->(:Review)-[:REVIEWS]->(rec) ) WITH rec, COUNT(*) AS num ORDER BY num DESC LIMIT $first RETURN rec"
+    )
+}
+
+type Business {
+  businessId: ID!
+  name: String!
+  address: String
+  city: String
+  state: String
+  location: Point
+  avgStars: Float
+    @cypher(
+      statement: "MATCH (this)<-[:REVIEWS]-(r:Review) RETURN coalesce(avg(r.stars),0.0)"
+    )
+  reviews: [Review] @relationship(type: "REVIEWS", direction: IN)
+  categories: [Category] @relationship(type: "IN_CATEGORY", direction: OUT)
+}
+
+type Review {
+  reviewId: ID!
+  stars: Float
+  text: String
+  date: DateTime
+  business: Business @relationship(type: "REVIEWS", direction: OUT)
+  user: User @relationship(type: "WROTE", direction: IN)
+}
+
+type Category {
+  name: ID!
+  businesses: [Business] @relationship(type: "IN_CATEGORY", direction: IN)
+}
+
+type RatingCount @exclude {
+  stars: Float!
+  count: Int!
+}
+
+type Query {
+  userCount: Int!
+    @isAuthenticated
+    @cypher(statement: "MATCH (u:User) RETURN COUNT(u)")
+  ratingsCount: [RatingCount]
+    @cypher(
+      statement: "MATCH (r:Review) WITH r.stars AS stars, COUNT(*) AS count ORDER BY stars RETURN {stars: stars, count: count}"
+    )
+  allNodes: [User]
+    @cypher(statement: "MATCH (u:User) RETURN u")
+  customResolverBgi: Int!
+
+}

@@ -16,10 +16,9 @@ const gateway = new ApolloGateway({
   // prevents composition failures at runtime using schema validation using
   // real usage-based metrics.
   serviceList: [
-    // { name: 'bgi', url: 'http://localhost:4001/graphql' },
-    { name: 'bgi', url: `${process.env.URL}/.netlify/functions/bgi` },
-    // { name: 'casc', url: 'http://localhost:4003/graphql' },
-    // { name: 'casics3', url: 'http://localhost:4004/graphql' },
+    { name: 'bgi', url: `http://127.0.0.1:4001/graphql` },
+    { name: 'casc', url: 'http://localhost:4003/graphql' },
+    { name: 'cec', url: 'http://localhost:4004/graphql' },
   ],
 
   // Experimental: Enabling this enables the query plan view in Playground.

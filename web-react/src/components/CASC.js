@@ -6,8 +6,8 @@ import { Button, TextareaAutosize } from '@material-ui/core'
 import { useJsonToCsv } from 'react-json-csv'
 
 const ALL = gql`
-  query get_cec($query: String) {
-    get_cec(query: $query) {
+  query get_casc($query: String) {
+    get_casc(query: $query) {
       nodes {
         __typename
         ... on Inventor {
@@ -37,7 +37,7 @@ const ALL = gql`
   }
 `
 
-export default function CEC() {
+export default function CASC() {
   const [cypherQuery, setCypherQuery] = React.useState(
     'MATCH (n)-[r]->(m) RETURN n, r, m LIMIT 100'
   )
@@ -52,12 +52,12 @@ export default function CEC() {
   if (response.error) return <p>Error</p>
   if (response.loading) return <p>Loading</p>
 
-  if (response.data && response.data.get_cec && response.data.get_cec.nodes) {
-    nodes = response.data.get_cec.nodes
+  if (response.data && response.data.get_casc && response.data.get_casc.nodes) {
+    nodes = response.data.get_casc.nodes
   }
 
-  if (response.data && response.data.get_cec && response.data.get_cec.links) {
-    links = response.data.get_cec.links
+  if (response.data && response.data.get_casc && response.data.get_casc.links) {
+    links = response.data.get_casc.links
   }
 
   const handleLoadGraph = async (e) => {
@@ -108,7 +108,7 @@ export default function CEC() {
   }
   return (
     <React.Fragment>
-      <Title>CEC</Title>
+      <Title>CASC</Title>
       {nodes &&
         links &&
         !response.error &&
