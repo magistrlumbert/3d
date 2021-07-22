@@ -17,9 +17,5 @@
     "@babel/core": "^7.14.6",
     "@babel/node": "^7.14.7",
     "@babel/preset-env": "^7.14.7"
-  },
-  "compilerOptions": {
-    "module": "es6",
-    "target": "es5"
   }
 }
