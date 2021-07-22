@@ -18,7 +18,6 @@ import {
   ListItem,
   ListItemText,
   ListItemIcon,
-  Button,
 } from '@material-ui/core'
 import { Link } from 'react-router-dom'
 import {
@@ -27,8 +26,6 @@ import {
   Dashboard as DashboardIcon,
 } from '@material-ui/icons'
 import Dashboard from './components/Dashboard'
-
-import { useAuth0 } from '@auth0/auth0-react'
 
 function Copyright() {
   return (
@@ -134,15 +131,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function App() {
   const classes = useStyles()
-  const [open, setOpen] = React.useState(true)
-  const { loginWithRedirect, logout, isAuthenticated } = useAuth0()
-  const handleDrawerOpen = () => {
-    setOpen(true)
-  }
-  const handleDrawerClose = () => {
-    setOpen(false)
-  }
-
   return (
     <Router>
       <div className={classes.root}>
@@ -156,7 +144,6 @@ export default function App() {
               edge="start"
               color="inherit"
               aria-label="open drawer"
-              onClick={handleDrawerOpen}
               className={clsx(
                 classes.menuButton,
                 open && classes.menuButtonHidden
@@ -178,17 +165,6 @@ export default function App() {
             >
               Welcome To GRANDstack App
             </Typography>
-            {!isAuthenticated && (
-              <Button onClick={loginWithRedirect} color="inherit">
-                Log In
-              </Button>
-            )}
-
-            {isAuthenticated && (
-              <Button onClick={logout} color="inherit">
-                Log Out
-              </Button>
-            )}
           </Toolbar>
         </AppBar>
         <Drawer
@@ -199,7 +175,7 @@ export default function App() {
           open={open}
         >
           <div className={classes.toolbarIcon}>
-            <IconButton onClick={handleDrawerClose}>
+            <IconButton>
               <ChevronLeftIcon />
             </IconButton>
           </div>
