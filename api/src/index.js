@@ -7,7 +7,7 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 const app = express()
-console.log(process.env.URL)
+console.log('/myNewApp/api/src/index.js')
 
 const gateway = new ApolloGateway({
   // This entire `serviceList` is optional when running in managed federation
@@ -16,9 +16,9 @@ const gateway = new ApolloGateway({
   // prevents composition failures at runtime using schema validation using
   // real usage-based metrics.
   serviceList: [
-    { name: 'bgi', url: `http://127.0.0.1:4001/graphql` },
-    { name: 'casc', url: 'http://localhost:4003/graphql' },
-    { name: 'cec', url: 'http://localhost:4004/graphql' },
+    { name: 'bgi', url: `http://0.0.0.0:4001/graphql` },
+    // { name: 'casc', url: 'http://localhost:4003/graphql' },
+    // { name: 'cec', url: 'http://localhost:4004/graphql' },
   ],
 
   // Experimental: Enabling this enables the query plan view in Playground.
@@ -37,9 +37,14 @@ const server = new ApolloServer({
 })
 
 // Specify host, port and path for GraphQL endpoint
-const port = process.env.GRAPHQL_SERVER_PORT || 4000
-const path = process.env.GRAPHQL_SERVER_PATH || '/graphql'
-const host = process.env.GRAPHQL_SERVER_HOST || '64.225.103.139'
+const port = 4000
+const path = '/graphql'
+const host = '0.0.0.0'
+
+app.get('/refreshGateway', (request, response) => {
+  gateway.load()
+  response.sendStatus(200)
+})
 
 /*
  * Optionally, apply Express middleware for authentication, etc

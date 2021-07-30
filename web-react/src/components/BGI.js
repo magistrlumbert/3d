@@ -4,6 +4,13 @@ import Title from './Title'
 import ForceGraph3D from 'react-force-graph-3d'
 import { Button, TextareaAutosize } from '@material-ui/core'
 import { useJsonToCsv } from 'react-json-csv'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+} from '@material-ui/core'
 
 const ALL = gql`
   query get_bgi($query: String) {
@@ -33,6 +40,8 @@ const ALL = gql`
         target
         type
       }
+      error
+      columns
     }
   }
 `
@@ -44,6 +53,10 @@ export default function BGI() {
   const [runCustomQuery, response] = useLazyQuery(ALL)
   let nodes = false
   let links = false
+  let error = false
+  let columns = false
+  let column_heads = false
+  let size = false
 
   if (response.loading) {
     return 'Loading...'
@@ -60,6 +73,34 @@ export default function BGI() {
     links = response.data.get_bgi.links
   }
 
+  if (response.data && response.data.get_bgi && response.data.get_bgi.error) {
+    error = response.data.get_bgi.error
+  }
+
+  if (
+    response.data &&
+    response.data.get_bgi &&
+    response.data.get_bgi.columns &&
+    response.data.get_bgi.columns !== '{}'
+  ) {
+    columns = JSON.parse(response.data.get_bgi.columns)
+    column_heads = Object.keys(columns)
+    size = Object.keys(columns[column_heads[0]]).length
+  }
+  const returnTableCells = (columns) => {
+    const newMap = [...Array(size)].map((_, i) => i)
+    return newMap.map((_, i) => {
+      return (
+        <TableRow key={'id-' + i}>
+          {column_heads.map((headCell) => {
+            return (
+              <TableCell key={headCell + i}>{columns[headCell][i]}</TableCell>
+            )
+          })}
+        </TableRow>
+      )
+    })
+  }
   const handleLoadGraph = async (e) => {
     e.preventDefault()
     try {
@@ -127,6 +168,21 @@ export default function BGI() {
             />
           </>
         )}
+
+      {columns && (
+        <Table>
+          <TableHead>
+            <TableRow>
+              {column_heads.map((headCell) => (
+                <TableCell key={headCell}>{headCell}</TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>{returnTableCells(columns)}</TableBody>
+        </Table>
+      )}
+
+      {error && <>{error}</>}
       <aside className="button-bar">
         <p>
           <TextareaAutosize

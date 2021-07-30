@@ -1,9 +1,11 @@
-import { ApolloServer, gql } from 'apollo-server'
+import { ApolloServer, gql } from 'apollo-server-express'
 import { buildFederatedSchema } from '@apollo/federation'
 import neo4j from 'neo4j-driver'
+import express from 'express'
 import dotenv from 'dotenv'
 // set environment variables from .env
 dotenv.config()
+const app = express()
 
 const resolvers = {
   BGI: {
@@ -27,46 +29,70 @@ const resolvers = {
     get_bgi: async (_, { query }, ctx) => {
       let session = ctx.driver.session()
       const cypherQuery = query
-      return await session.run(cypherQuery).then((result) => {
-        let nodes = []
-        let links = []
-        result.records.map((record) => {
-          const n = record.get('n') === null ? null : record.get('n').properties
-          let source = {
-            ...n,
-            ['identity']: record.get('n').identity.toString(),
-          }
-          const m = record.get('m') === null ? null : record.get('m').properties
-          let target = {
-            ...m,
-            ['identity']: record.get('m').identity.toString(),
-          }
-          const r = record.get('r') === null ? null : record.get('r').properties
-          let link = {
-            ...r,
-            ['identity']: record.get('r').identity.toString(),
-            ['source']: record.get('r').start.toString(),
-            ['target']: record.get('r').end.toString(),
-            ['type']: record.get('r').type.toString(),
-          }
+      return await session
+        .run(cypherQuery)
+        .then((result) => {
+          let columns = {}
+          let elements = {}
+          let nodes = []
+          let links = []
+          result.records.map((record) => {
+            record.keys.map((key) => {
+              let element = 0
+              try {
+                element = record.get(key)
+                if (element.start) {
+                  //rels
+                  let link = {
+                    ...element.properties,
+                    ['identity']: element.identity.toString(),
+                    ['source']: element.start.toString(),
+                    ['target']: element.end.toString(),
+                    ['type']: element.type.toString(),
+                  }
 
-          let found = nodes.some((el) => el.identity === source.identity)
-          if (!found) nodes = [...nodes, source]
-          found = nodes.some((el) => el.identity === target.identity)
-          if (!found) nodes = [...nodes, target]
+                  links = [...links, link]
+                } else {
+                  //nodes
+                  if (element.identity) {
+                    let source = {
+                      ...element.properties,
+                      ['identity']: element.identity.toString(),
+                    }
+                    let found = nodes.some(
+                      (el) => el.identity === source.identity
+                    )
+                    if (!found) nodes = [...nodes, source]
+                  } else {
+                    //columns
+                    if (!elements[key]) {
+                      elements[key] = {}
+                    }
+                    elements[key][Object.keys(elements[key]).length] =
+                      element.toString()
+                    columns = elements
+                  }
+                }
+              } catch (error) {
+                console.log(error.message)
+              }
+            })
 
-          links = [...links, link]
-          return {
+            return true
+          })
+          const answer = {
             nodes: nodes,
             links: links,
+            columns: JSON.stringify(columns),
+          }
+          return answer
+        })
+        .catch((error) => {
+          console.log(error.message)
+          return {
+            error: error.message,
           }
         })
-
-        return {
-          nodes: nodes,
-          links: links,
-        }
-      })
     },
   },
 }
@@ -77,7 +103,6 @@ const resolvers = {
  * with fallback to defaults
  */
 
-// console.log("process.env.NEO4J_URI_BGI", process.env.NEO4J_URI_BGI)
 const driver = neo4j.driver(
   process.env.NEO4J_URI_BGI || 'bolt://54.224.51.117:7687',
   neo4j.auth.basic(
@@ -95,6 +120,8 @@ const typeDefs = gql`
   type ResponseBGI {
     nodes: [BGI]
     links: [RELS]
+    columns: String
+    error: String
   }
   type RELS {
     identity: ID!
@@ -137,6 +164,13 @@ const server = new ApolloServer({
   introspection: true,
 })
 
-server.listen({ port: 4001 }).then(({ url }) => {
-  console.log(`🚀 Server ready at ${url}`)
+// Specify host, port and path for GraphQL endpoint
+const port = 4001
+const path = '/graphql'
+const host = '0.0.0.0'
+
+server.applyMiddleware({ app, path })
+
+app.listen({ host, port, path }, () => {
+  console.log(`GraphQL server ready at http://${host}:${port}${path}`)
 })
