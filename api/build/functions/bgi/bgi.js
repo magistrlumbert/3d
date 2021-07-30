@@ -4,19 +4,28 @@ var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequ
 
 var _map = _interopRequireDefault(require("@babel/runtime-corejs3/core-js/instance/map"));
 
+var _keys = _interopRequireDefault(require("@babel/runtime-corejs3/core-js/instance/keys"));
+
 var _some = _interopRequireDefault(require("@babel/runtime-corejs3/core-js/instance/some"));
 
-var _apolloServer = require("apollo-server");
+var _keys2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js/object/keys"));
+
+var _stringify = _interopRequireDefault(require("@babel/runtime-corejs3/core-js/json/stringify"));
+
+var _apolloServerExpress = require("apollo-server-express");
 
 var _federation = require("@apollo/federation");
 
 var _neo4jDriver = _interopRequireDefault(require("neo4j-driver"));
+
+var _express = _interopRequireDefault(require("express"));
 
 var _dotenv = _interopRequireDefault(require("dotenv"));
 
 // set environment variables from .env
 _dotenv.default.config();
 
+const app = (0, _express.default)();
 const resolvers = {
   BGI: {
     __resolveType(obj) {
@@ -49,37 +58,62 @@ const resolvers = {
       return await session.run(cypherQuery).then(result => {
         var _context;
 
+        let columns = {};
+        let elements = {};
         let nodes = [];
         let links = [];
         (0, _map.default)(_context = result.records).call(_context, record => {
-          const n = record.get('n') === null ? null : record.get('n').properties;
-          let source = { ...n,
-            ['identity']: record.get('n').identity.toString()
-          };
-          const m = record.get('m') === null ? null : record.get('m').properties;
-          let target = { ...m,
-            ['identity']: record.get('m').identity.toString()
-          };
-          const r = record.get('r') === null ? null : record.get('r').properties;
-          let link = { ...r,
-            ['identity']: record.get('r').identity.toString(),
-            ['source']: record.get('r').start.toString(),
-            ['target']: record.get('r').end.toString(),
-            ['type']: record.get('r').type.toString()
-          };
-          let found = (0, _some.default)(nodes).call(nodes, el => el.identity === source.identity);
-          if (!found) nodes = [...nodes, source];
-          found = (0, _some.default)(nodes).call(nodes, el => el.identity === target.identity);
-          if (!found) nodes = [...nodes, target];
-          links = [...links, link];
-          return {
-            nodes: nodes,
-            links: links
-          };
+          var _context2;
+
+          (0, _map.default)(_context2 = (0, _keys.default)(record)).call(_context2, key => {
+            let element = 0;
+
+            try {
+              element = record.get(key);
+
+              if (element.start) {
+                //rels
+                let link = { ...element.properties,
+                  ['identity']: element.identity.toString(),
+                  ['source']: element.start.toString(),
+                  ['target']: element.end.toString(),
+                  ['type']: element.type.toString()
+                };
+                links = [...links, link];
+              } else {
+                //nodes
+                if (element.identity) {
+                  let source = { ...element.properties,
+                    ['identity']: element.identity.toString()
+                  };
+                  let found = (0, _some.default)(nodes).call(nodes, el => el.identity === source.identity);
+                  if (!found) nodes = [...nodes, source];
+                } else {
+                  //columns
+                  if (!elements[key]) {
+                    elements[key] = {};
+                  }
+
+                  elements[key][(0, _keys2.default)(elements[key]).length] = element.toString();
+                  columns = elements;
+                }
+              }
+            } catch (error) {
+              console.log(error.message);
+            }
+          });
+          return true;
         });
-        return {
+        const answer = {
           nodes: nodes,
-          links: links
+          links: links,
+          columns: (0, _stringify.default)(columns)
+        };
+        return answer;
+      }).catch(error => {
+        console.log(error.message);
+        return {
+          error: error.message
         };
       });
     }
@@ -90,11 +124,10 @@ const resolvers = {
  * using credentials specified as environment variables
  * with fallback to defaults
  */
-// console.log("process.env.NEO4J_URI_BGI", process.env.NEO4J_URI_BGI)
 
 const driver = _neo4jDriver.default.driver(process.env.NEO4J_URI_BGI || 'bolt://54.224.51.117:7687', _neo4jDriver.default.auth.basic(process.env.NEO4J_USER || 'neo4j', process.env.NEO4J_PASSWORD_BGI || 'i-08bb780d2ee5c5ec9'));
 
-const typeDefs = (0, _apolloServer.gql)`
+const typeDefs = (0, _apolloServerExpress.gql)`
   union BGI = Inventor | Licensee | Organization | Patent
 
   extend type Query {
@@ -103,6 +136,8 @@ const typeDefs = (0, _apolloServer.gql)`
   type ResponseBGI {
     nodes: [BGI]
     links: [RELS]
+    columns: String
+    error: String
   }
   type RELS {
     identity: ID!
@@ -128,7 +163,7 @@ const typeDefs = (0, _apolloServer.gql)`
     identity: String
   }
 `;
-const server = new _apolloServer.ApolloServer({
+const server = new _apolloServerExpress.ApolloServer({
   context: ({
     req
   }) => {
@@ -143,11 +178,19 @@ const server = new _apolloServer.ApolloServer({
   }]),
   playground: true,
   introspection: true
+}); // Specify host, port and path for GraphQL endpoint
+
+const port = 4001;
+const path = '/graphql';
+const host = '0.0.0.0';
+server.applyMiddleware({
+  app,
+  path
 });
-server.listen({
-  port: 4001
-}).then(({
-  url
-}) => {
-  console.log(`🚀 Server ready at ${url}`);
+app.listen({
+  host,
+  port,
+  path
+}, () => {
+  console.log(`GraphQL server ready at http://${host}:${port}${path}`);
 });

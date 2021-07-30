@@ -14,7 +14,7 @@ var _dotenv = _interopRequireDefault(require("dotenv"));
 _dotenv.default.config();
 
 const app = (0, _express.default)();
-console.log(process.env.URL);
+console.log('/myNewApp/api/src/index.js');
 const gateway = new _gateway.ApolloGateway({
   // This entire `serviceList` is optional when running in managed federation
   // mode, using Apollo Graph Manager as the source of truth.  In production,
@@ -23,14 +23,10 @@ const gateway = new _gateway.ApolloGateway({
   // real usage-based metrics.
   serviceList: [{
     name: 'bgi',
-    url: `http://127.0.0.1:4001/graphql`
-  }, {
-    name: 'casc',
-    url: 'http://localhost:4003/graphql'
-  }, {
-    name: 'cec',
-    url: 'http://localhost:4004/graphql'
-  }],
+    url: `http://0.0.0.0:4001/graphql`
+  } // { name: 'casc', url: 'http://localhost:4003/graphql' },
+  // { name: 'cec', url: 'http://localhost:4004/graphql' },
+  ],
   // Experimental: Enabling this enables the query plan view in Playground.
   __exposeQueryPlanExperimental: false
 });
@@ -46,9 +42,13 @@ const server = new _apolloServerExpress.ApolloServer({
   subscriptions: false
 }); // Specify host, port and path for GraphQL endpoint
 
-const port = process.env.GRAPHQL_SERVER_PORT || 4000;
-const path = process.env.GRAPHQL_SERVER_PATH || '/graphql';
-const host = process.env.GRAPHQL_SERVER_HOST || '0.0.0.0';
+const port = 4000;
+const path = '/graphql';
+const host = '0.0.0.0';
+app.get('/refreshGateway', (request, response) => {
+  gateway.load();
+  response.sendStatus(200);
+});
 /*
  * Optionally, apply Express middleware for authentication, etc
  * This also also allows us to specify a path for the GraphQL endpoint
