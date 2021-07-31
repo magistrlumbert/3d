@@ -18,55 +18,73 @@ const resolvers = {
   },
   Query: {
     get_bgi: async (_, { query }, ctx) => {
-      console.log('wish you were here')
       let session = ctx.driver.session()
-      // const cypherQuery = `MATCH (n)-[r]-(m)
-      //                     RETURN n, m, r
-      //                     LIMIT 50`
       const cypherQuery = query
-      console.log(cypherQuery)
-      return await session.run(cypherQuery).then((result) => {
-        let nodes = []
-        let links = []
-        const resData = result.records.map((record) => {
-          const n = record.get('n') === null ? null : record.get('n').properties
-          let source = {
-            ...n,
-            ['identity']: record.get('n').identity.toString(),
-          }
-          const m = record.get('m') === null ? null : record.get('m').properties
-          let target = {
-            ...m,
-            ['identity']: record.get('m').identity.toString(),
-          }
-          const r = record.get('r') === null ? null : record.get('r').properties
-          let link = {
-            ...r,
-            ['identity']: record.get('r').identity.toString(),
-            ['source']: record.get('r').start.toString(),
-            ['target']: record.get('r').end.toString(),
-            ['type']: record.get('r').type.toString(),
-          }
+      return await session
+        .run(cypherQuery)
+        .then((result) => {
+          let columns = {}
+          let elements = {}
+          let nodes = []
+          let links = []
+          result.records.map((record) => {
+            record.keys.map((key) => {
+              let element = 0
+              try {
+                element = record.get(key)
+                if (element.start) {
+                  //rels
+                  let link = {
+                    ...element.properties,
+                    ['identity']: element.identity.toString(),
+                    ['source']: element.start.toString(),
+                    ['target']: element.end.toString(),
+                    ['type']: element.type.toString(),
+                  }
 
-          let found = nodes.some((el) => el.identity === source.identity)
-          if (!found) nodes = [...nodes, source]
-          found = nodes.some((el) => el.identity === target.identity)
-          if (!found) nodes = [...nodes, target]
+                  links = [...links, link]
+                } else {
+                  //nodes
+                  if (element.identity) {
+                    let source = {
+                      ...element.properties,
+                      ['identity']: element.identity.toString(),
+                    }
+                    let found = nodes.some(
+                      (el) => el.identity === source.identity
+                    )
+                    if (!found) nodes = [...nodes, source]
+                  } else {
+                    //columns
+                    if (!elements[key]) {
+                      elements[key] = {}
+                    }
+                    elements[key][Object.keys(elements[key]).length] =
+                      element.toString()
+                    columns = elements
+                  }
+                }
+              } catch (error) {
+                console.log(error.message)
+              }
+            })
 
-          links = [...links, link]
-          return {
+            return true
+          })
+          const answer = {
             nodes: nodes,
             links: links,
+            columns: JSON.stringify(columns),
+          }
+          return answer
+        })
+        .catch((error) => {
+          console.log(error.message)
+          return {
+            error: error.message,
           }
         })
-
-        return {
-          nodes: nodes,
-          links: links,
-        }
-      })
     },
   },
 }
-
 export default resolvers
