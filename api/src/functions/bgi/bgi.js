@@ -48,5 +48,5 @@ const host = '0.0.0.0'
 server.applyMiddleware({ app, path })
 
 app.listen({ host, port, path }, () => {
-  console.log(`GraphQL server ready at http://${host}:${port}${path}`)
+  console.log(`GraphQL bgi server ready at http://${host}:${port}${path}`)
 })

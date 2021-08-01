@@ -17,7 +17,7 @@ const gateway = new ApolloGateway({
   // real usage-based metrics.
   serviceList: [
     { name: 'bgi', url: `http://0.0.0.0:4001/graphql` },
-    // { name: 'casc', url: 'http://localhost:4003/graphql' },
+    { name: 'casc', url: 'http://0.0.0.0:4002/graphql' },
     // { name: 'cec', url: 'http://localhost:4004/graphql' },
   ],
 
@@ -53,5 +53,7 @@ app.get('/refreshGateway', (request, response) => {
 server.applyMiddleware({ app, path })
 
 app.listen({ host, port, path }, () => {
-  console.log(`GraphQL server ready at http://${host}:${port}${path}`)
+  console.log(
+    `GraphQL api new server ready it is me at http://${host}:${port}${path}`
+  )
 })

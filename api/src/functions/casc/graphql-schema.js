@@ -1,5 +1,6 @@
 import fs from 'fs'
 import path from 'path'
+const __dirname = path.resolve()
 
 /*
  * Check for GRAPHQL_SCHEMA environment variable to specify schema file
