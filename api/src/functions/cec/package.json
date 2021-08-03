@@ -1,12 +1,12 @@
 {
-  "name": "cec",
+  "name": "casc",
   "scripts": {
-    "start": "node cec.js",
+    "start": "pm2 start cec.js",
     "build": "CI= npm run build"
   },
   "dependencies": {
     "@apollo/federation": "latest",
-    "apollo-server-lambda": "^2.14.2",
+    "apollo-server": "^2.19.2",
     "dotenv": "^10.0.0",
     "graphql": "^15.5.1",
     "neo4j-driver": "^4.3.1"
@@ -17,9 +17,5 @@
     "@babel/core": "^7.14.6",
     "@babel/node": "^7.14.7",
     "@babel/preset-env": "^7.14.7"
-  },
-  "compilerOptions": {
-    "module": "es6",
-    "target": "es5"
   }
 }

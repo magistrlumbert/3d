@@ -1,7 +1,7 @@
 {
   "name": "bgi",
   "scripts": {
-    "start": "node --harmony bgi.js",
+    "start": "pm2 start bgi.js",
     "build": "CI= npm run build"
   },
   "dependencies": {

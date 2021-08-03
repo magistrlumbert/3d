@@ -1,7 +1,7 @@
 {
   "name": "casc",
   "scripts": {
-    "start": " pm2 start casc.js",
+    "start": "pm2 start casc.js",
     "build": "CI= npm run build"
   },
   "dependencies": {

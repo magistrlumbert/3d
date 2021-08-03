@@ -62,6 +62,7 @@ export default function CEC() {
 
   const handleLoadGraph = async (e) => {
     e.preventDefault()
+    console.log('trying to send query')
     try {
       await runCustomQuery({
         variables: { query: cypherQuery },
@@ -138,7 +139,7 @@ export default function CEC() {
           />
         </p>
         <Button variant="contained" onClick={handleLoadGraph}>
-          Load graph)
+          Run query
         </Button>
         <Button variant="contained" onClick={downLoadGraph}>
           download in csv

@@ -16,10 +16,10 @@ const app = express()
  */
 
 const driver = neo4j.driver(
-  process.env.NEO4J_URI_CASC || 'bolt://34.239.140.111:7687',
+  process.env.NEO4J_URI_CASC || 'bolt://0.0.0.0:7687',
   neo4j.auth.basic(
     process.env.NEO4J_USER || 'neo4j',
-    process.env.NEO4J_PASSWORD_CASC || 'i-0cd55b5744e56cfcc'
+    process.env.NEO4J_PASSWORD_CASC || 'neo4j'
   )
 )
 

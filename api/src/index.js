@@ -1,13 +1,8 @@
 import { ApolloServer } from 'apollo-server-express'
 import { ApolloGateway } from '@apollo/gateway'
 import express from 'express'
-import dotenv from 'dotenv'
-
-// set environment variables from .env
-dotenv.config()
 
 const app = express()
-console.log('/myNewApp/api/src/index.js')
 
 const gateway = new ApolloGateway({
   // This entire `serviceList` is optional when running in managed federation
@@ -18,7 +13,7 @@ const gateway = new ApolloGateway({
   serviceList: [
     { name: 'bgi', url: `http://0.0.0.0:4001/graphql` },
     { name: 'casc', url: 'http://0.0.0.0:4002/graphql' },
-    // { name: 'cec', url: 'http://localhost:4004/graphql' },
+    { name: 'cec', url: 'http://0.0.0.0:4003/graphql' },
   ],
 
   // Experimental: Enabling this enables the query plan view in Playground.
