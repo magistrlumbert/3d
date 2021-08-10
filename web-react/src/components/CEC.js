@@ -4,6 +4,13 @@ import Title from './Title'
 import ForceGraph3D from 'react-force-graph-3d'
 import { Button, TextareaAutosize } from '@material-ui/core'
 import { useJsonToCsv } from 'react-json-csv'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+} from '@material-ui/core'
 
 const ALL = gql`
   query get_cec($query: String) {
@@ -33,6 +40,8 @@ const ALL = gql`
         target
         type
       }
+      error
+      columns
     }
   }
 `
@@ -44,7 +53,12 @@ export default function CEC() {
   const [runCustomQuery, response] = useLazyQuery(ALL)
   let nodes = false
   let links = false
-
+  let error = false
+  let columns = false
+  let column_heads = false
+  let column_data = false
+  // let size = false
+  const nodeLabel = ['name', 'patentID']
   if (response.loading) {
     return 'Loading...'
   }
@@ -52,17 +66,58 @@ export default function CEC() {
   if (response.error) return <p>Error</p>
   if (response.loading) return <p>Loading</p>
 
-  if (response.data && response.data.get_cec && response.data.get_cec.nodes) {
+  if (
+    response.data &&
+    response.data.get_cec &&
+    response.data.get_cec.nodes
+  ) {
     nodes = response.data.get_cec.nodes
   }
 
-  if (response.data && response.data.get_cec && response.data.get_cec.links) {
+  if (
+    response.data &&
+    response.data.get_cec &&
+    response.data.get_cec.links
+  ) {
     links = response.data.get_cec.links
   }
 
+  if (
+    response.data &&
+    response.data.get_cec &&
+    response.data.get_cec.error
+  ) {
+    error = response.data.get_cec.error
+  }
+
+  if (
+    response.data &&
+    response.data.get_cec &&
+    response.data.get_cec.columns &&
+    response.data.get_cec.columns !== '{}'
+  ) {
+    columns = JSON.parse(response.data.get_cec.columns)
+    column_heads = Object.keys(columns.fields)
+    column_data = columns.data
+  }
+  const returnTableCells = (columns) => {
+    const newMap = Object.values(columns)
+    return newMap.map((row, index) => {
+      return (
+        <TableRow key={'row-' + index}>
+          {column_heads.map((headCell) => {
+            const tablecell = (
+              <TableCell key={headCell + index}>{row[headCell]}</TableCell>
+            )
+            index++
+            return tablecell
+          })}
+        </TableRow>
+      )
+    })
+  }
   const handleLoadGraph = async (e) => {
     e.preventDefault()
-    console.log('trying to send query')
     try {
       await runCustomQuery({
         variables: { query: cypherQuery },
@@ -70,6 +125,7 @@ export default function CEC() {
     } catch (e) {
       console.error(e)
     }
+    setCypherQuery('MATCH (n)-[r]->(m) RETURN n, r, m LIMIT 100')
   }
   const downLoadGraph = () => {
     const { saveAsCsv } = useJsonToCsv()
@@ -81,7 +137,7 @@ export default function CEC() {
       licenseID: 'licenseID',
     }
     // save edges to csv
-    data = []
+    let data = []
     for (const [key, value] of Object.entries(nodes)) {
       data = [...data, value]
       console.log(key, value)
@@ -91,7 +147,7 @@ export default function CEC() {
     console.log('nodes saved')
 
     filename = 'Csv-file-edges'
-    let data = []
+    data = []
     fields = {
       identity: 'identity',
       source: 'source',
@@ -106,6 +162,17 @@ export default function CEC() {
     saveAsCsv({ data, fields, filename })
 
     console.log('edges saved')
+    console.log(columns.data)
+    console.log(Object.values(columns.data))
+
+    data = Object.values(columns.data)
+    console.log(data)
+    fields = columns.fields
+    console.log(fields)
+    filename = 'columns'
+    saveAsCsv({ data, fields, filename })
+
+    console.log('columns saved')
   }
   return (
     <React.Fragment>
@@ -125,9 +192,25 @@ export default function CEC() {
               linkCurvature={0.2}
               linkDirectionalArrowRelPos={1}
               linkDirectionalArrowLength={10}
+              nodeLabel={nodeLabel}
             />
           </>
         )}
+
+      {columns && column_data && (
+        <Table>
+          <TableHead>
+            <TableRow>
+              {column_heads.map((headCell) => (
+                <TableCell key={headCell}>{headCell}</TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>{returnTableCells(column_data)}</TableBody>
+        </Table>
+      )}
+
+      {error && <>{error}</>}
       <aside className="button-bar">
         <p>
           <TextareaAutosize
@@ -139,7 +222,7 @@ export default function CEC() {
           />
         </p>
         <Button variant="contained" onClick={handleLoadGraph}>
-          Run query
+          Load graph)
         </Button>
         <Button variant="contained" onClick={downLoadGraph}>
           download in csv

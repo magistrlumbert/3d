@@ -13,8 +13,8 @@ import {
 } from '@material-ui/core'
 
 const ALL = gql`
-  query get_csic($query: String) {
-    get_csic(query: $query) {
+  query get_casic($query: String) {
+    get_casic(query: $query) {
       nodes {
         __typename
         ... on Inventor {
@@ -46,7 +46,7 @@ const ALL = gql`
   }
 `
 
-export default function CSIC() {
+export default function CASIC() {
   const [cypherQuery, setCypherQuery] = React.useState(
     'MATCH (n)-[r]->(m) RETURN n, r, m LIMIT 100'
   )
@@ -68,35 +68,35 @@ export default function CSIC() {
 
   if (
     response.data &&
-    response.data.get_csic &&
-    response.data.get_csic.nodes
+    response.data.get_casic &&
+    response.data.get_casic.nodes
   ) {
-    nodes = response.data.get_csic.nodes
+    nodes = response.data.get_casic.nodes
   }
 
   if (
     response.data &&
-    response.data.get_csic &&
-    response.data.get_csic.links
+    response.data.get_casic &&
+    response.data.get_casic.links
   ) {
-    links = response.data.get_csic.links
+    links = response.data.get_casic.links
   }
 
   if (
     response.data &&
-    response.data.get_csic &&
-    response.data.get_csic.error
+    response.data.get_casic &&
+    response.data.get_casic.error
   ) {
-    error = response.data.get_csic.error
+    error = response.data.get_casic.error
   }
 
   if (
     response.data &&
-    response.data.get_csic &&
-    response.data.get_csic.columns &&
-    response.data.get_csic.columns !== '{}'
+    response.data.get_casic &&
+    response.data.get_casic.columns &&
+    response.data.get_casic.columns !== '{}'
   ) {
-    columns = JSON.parse(response.data.get_csic.columns)
+    columns = JSON.parse(response.data.get_casic.columns)
     column_heads = Object.keys(columns.fields)
     column_data = columns.data
   }
@@ -176,7 +176,7 @@ export default function CSIC() {
   }
   return (
     <React.Fragment>
-      <Title>CSIC</Title>
+      <Title>CASIC</Title>
       {nodes &&
         links &&
         !response.error &&

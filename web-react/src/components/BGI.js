@@ -56,8 +56,9 @@ export default function BGI() {
   let error = false
   let columns = false
   let column_heads = false
-  let size = false
-
+  let column_data = false
+  // let size = false
+  const nodeLabel = ['name', 'patentID']
   if (response.loading) {
     return 'Loading...'
   }
@@ -65,15 +66,27 @@ export default function BGI() {
   if (response.error) return <p>Error</p>
   if (response.loading) return <p>Loading</p>
 
-  if (response.data && response.data.get_bgi && response.data.get_bgi.nodes) {
+  if (
+    response.data &&
+    response.data.get_bgi &&
+    response.data.get_bgi.nodes
+  ) {
     nodes = response.data.get_bgi.nodes
   }
 
-  if (response.data && response.data.get_bgi && response.data.get_bgi.links) {
+  if (
+    response.data &&
+    response.data.get_bgi &&
+    response.data.get_bgi.links
+  ) {
     links = response.data.get_bgi.links
   }
 
-  if (response.data && response.data.get_bgi && response.data.get_bgi.error) {
+  if (
+    response.data &&
+    response.data.get_bgi &&
+    response.data.get_bgi.error
+  ) {
     error = response.data.get_bgi.error
   }
 
@@ -84,18 +97,20 @@ export default function BGI() {
     response.data.get_bgi.columns !== '{}'
   ) {
     columns = JSON.parse(response.data.get_bgi.columns)
-    column_heads = Object.keys(columns)
-    size = Object.keys(columns[column_heads[0]]).length
+    column_heads = Object.keys(columns.fields)
+    column_data = columns.data
   }
   const returnTableCells = (columns) => {
-    const newMap = [...Array(size)].map((_, i) => i)
-    return newMap.map((_, i) => {
+    const newMap = Object.values(columns)
+    return newMap.map((row, index) => {
       return (
-        <TableRow key={'id-' + i}>
+        <TableRow key={'row-' + index}>
           {column_heads.map((headCell) => {
-            return (
-              <TableCell key={headCell + i}>{columns[headCell][i]}</TableCell>
+            const tablecell = (
+              <TableCell key={headCell + index}>{row[headCell]}</TableCell>
             )
+            index++
+            return tablecell
           })}
         </TableRow>
       )
@@ -110,6 +125,7 @@ export default function BGI() {
     } catch (e) {
       console.error(e)
     }
+    setCypherQuery('MATCH (n)-[r]->(m) RETURN n, r, m LIMIT 100')
   }
   const downLoadGraph = () => {
     const { saveAsCsv } = useJsonToCsv()
@@ -121,7 +137,7 @@ export default function BGI() {
       licenseID: 'licenseID',
     }
     // save edges to csv
-    data = []
+    let data = []
     for (const [key, value] of Object.entries(nodes)) {
       data = [...data, value]
       console.log(key, value)
@@ -131,7 +147,7 @@ export default function BGI() {
     console.log('nodes saved')
 
     filename = 'Csv-file-edges'
-    let data = []
+    data = []
     fields = {
       identity: 'identity',
       source: 'source',
@@ -146,6 +162,17 @@ export default function BGI() {
     saveAsCsv({ data, fields, filename })
 
     console.log('edges saved')
+    console.log(columns.data)
+    console.log(Object.values(columns.data))
+
+    data = Object.values(columns.data)
+    console.log(data)
+    fields = columns.fields
+    console.log(fields)
+    filename = 'columns'
+    saveAsCsv({ data, fields, filename })
+
+    console.log('columns saved')
   }
   return (
     <React.Fragment>
@@ -165,11 +192,12 @@ export default function BGI() {
               linkCurvature={0.2}
               linkDirectionalArrowRelPos={1}
               linkDirectionalArrowLength={10}
+              nodeLabel={nodeLabel}
             />
           </>
         )}
 
-      {columns && (
+      {columns && column_data && (
         <Table>
           <TableHead>
             <TableRow>
@@ -178,7 +206,7 @@ export default function BGI() {
               ))}
             </TableRow>
           </TableHead>
-          <TableBody>{returnTableCells(columns)}</TableBody>
+          <TableBody>{returnTableCells(column_data)}</TableBody>
         </Table>
       )}
 

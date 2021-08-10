@@ -7,6 +7,7 @@ import clsx from 'clsx'
 import BGI from './BGI'
 import CASC from './CASC'
 import CEC from './CEC'
+import CASIC from './CASIC'
 
 export default function Dashboard() {
   const theme = useTheme()
@@ -44,6 +45,11 @@ export default function Dashboard() {
         <Grid item xs={12} md={6} lg={6}>
           <Paper className={fixedHeightPaper}>
             <CEC />
+          </Paper>
+        </Grid>
+        <Grid item xs={12} md={6} lg={6}>
+          <Paper className={fixedHeightPaper}>
+            <CASIC />
           </Paper>
         </Grid>
       </Grid>

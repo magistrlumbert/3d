@@ -1,0 +1,34 @@
+union CASIC = Inventor | Licensee | Organization | Patent
+
+extend type Query {
+    get_casic(query: String): ResponseCASIC
+}
+type ResponseCASIC {
+    nodes: [CASIC]
+    links: [RELS]
+    columns: String
+    error: String
+}
+type RELS {
+    identity: ID!
+    source: String
+    target: String
+    type: String
+}
+type Inventor {
+    name: ID!
+    identity: String
+}
+type Licensee {
+    licenseID: ID!
+    identity: String
+}
+type Organization {
+    orgID: ID!
+    identity: String
+}
+type Patent {
+    patentID: ID!
+    title: String
+    identity: String
+}

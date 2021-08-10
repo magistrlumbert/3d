@@ -23,16 +23,18 @@ const resolvers = {
       return await session
         .run(cypherQuery)
         .then((result) => {
-          let columns = {}
-          let elements = {}
           let nodes = []
           let links = []
+          let fields = {}
+          let rows = {}
+          let row = {}
+          let i = 0
           result.records.map((record) => {
             record.keys.map((key) => {
               let element = 0
               try {
                 element = record.get(key)
-                if (element.start) {
+                if (element !== null && typeof element.start !== 'undefined') {
                   //rels
                   let link = {
                     ...element.properties,
@@ -56,25 +58,36 @@ const resolvers = {
                     if (!found) nodes = [...nodes, source]
                   } else {
                     //columns
-                    if (!elements[key]) {
-                      elements[key] = {}
+                    //fetch element to the row
+                    //add row to the common list (object)//check if key already in the fields
+                    if (key in fields) {
+                      //new row
+                      //close new row and save row to the object list
+                      rows = { ...rows, [i]: row }
+                      fields = {}
+                      row = {}
                     }
-                    elements[key][Object.keys(elements[key]).length] =
-                      element.toString()
-                    columns = elements
+                    fields = { ...fields, [key]: key }
+                    row[key] = element.toString()
+                    i++
                   }
                 }
               } catch (error) {
                 console.log(error.message)
               }
             })
-
+            rows = { ...rows, [i]: row }
             return true
           })
+          const json = {
+            data: rows,
+            fields: fields,
+          }
+
           const answer = {
             nodes: nodes,
             links: links,
-            columns: JSON.stringify(columns),
+            columns: JSON.stringify(json),
           }
           return answer
         })

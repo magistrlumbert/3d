@@ -13,7 +13,8 @@ const gateway = new ApolloGateway({
   serviceList: [
     { name: 'bgi', url: `http://0.0.0.0:4001/graphql` },
     { name: 'casc', url: 'http://0.0.0.0:4002/graphql' },
-    { name: 'cec', url: 'http://0.0.0.0:4003/graphql' },
+    // { name: 'cec', url: 'http://0.0.0.0:4003/graphql' },
+    // { name: 'casic', url: 'http://0.0.0.0:4004/graphql' },
   ],
 
   // Experimental: Enabling this enables the query plan view in Playground.

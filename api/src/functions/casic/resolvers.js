@@ -1,5 +1,5 @@
 const resolvers = {
-  CEC: {
+  CASIC: {
     __resolveType(obj) {
       if (obj.name) {
         return 'Inventor'
@@ -17,7 +17,7 @@ const resolvers = {
     },
   },
   Query: {
-    get_cec: async (_, { query }, ctx) => {
+    get_casic: async (_, { query }, ctx) => {
       let session = ctx.driver.session()
       const cypherQuery = query
       return await session
